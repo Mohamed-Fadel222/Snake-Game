@@ -95,7 +95,7 @@ function gameLoop() {
     drawSnake();
     moveSnake();
     drawFood();
-    drawScore();
+ drawScore();
 
     if (checkCollision()) {
         clearInterval(gameInterval);
@@ -119,3 +119,42 @@ function checkCollision() {
 
 document.addEventListener("keydown", handleKeyPress);
 let gameInterval = setInterval(gameLoop, 100);
+canvas.addEventListener("touchstart", handleTouchStart, false);
+canvas.addEventListener("touchmove", handleTouchMove, false);
+
+let touchStartX, touchStartY;
+
+function handleTouchStart(event) {
+    touchStartX = event.touches[0].clientX;
+    touchStartY = event.touches[0].clientY;
+}
+
+function handleTouchMove(event) {
+    if (!touchStartX || !touchStartY) {
+        return;
+    }
+
+    let touchEndX = event.touches[0].clientX;
+    let touchEndY = event.touches[0].clientY;
+
+    let dx = touchEndX - touchStartX;
+    let dy = touchEndY - touchStartY;
+
+    if (Math.abs(dx) > Math.abs(dy)) {
+        if (dx > 0 && direction !== "left") {
+            direction = "right";
+        } else if (dx < 0 && direction !== "right") {
+            direction = "left";
+        }
+    } else {
+        if (dy > 0 && direction !== "up") {
+            direction = "down";
+        } else if (dy < 0 && direction !== "down") {
+            direction = "up";
+        }
+    }
+
+
+    touchStartX = null;
+    touchStartY = null;
+}
